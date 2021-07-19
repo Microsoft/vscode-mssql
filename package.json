@@ -52,7 +52,8 @@
     "onCommand:mssql.objectExplorerNewQuery",
     "onCommand:mssql.toggleSqlCmd",
     "onCommand:mssql.loadCompletionExtension",
-    "onCommand:mssql.removeAadAccount"
+    "onCommand:mssql.removeAadAccount",
+    "onCommand:mssql.insertSqlInputBinding"
   ],
   "main": "./out/src/extension",
   "extensionDependencies": [
@@ -184,6 +185,10 @@
       {
         "language": "sql",
         "path": "./snippets/mssql.json"
+      },
+      {
+        "language": "csharp",
+        "path": "./snippets/azureFunctions.json"
       }
     ],
     "menus": {
@@ -229,6 +234,18 @@
           "when": "view == queryHistory",
           "title": "%mssql.clearAllQueryHistory%",
           "group": "secondary"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "mssql.copySqlBinding",
+          "when": "resourceLangId == sql",
+          "group": "MS_SQLBin"
+        },
+        {
+          "command": "mssql.insertSqlInputBinding",
+          "when": "resourceLangId == csharp",
+          "group": "MS_SQLBin"
         }
       ],
       "view/item/context": [
@@ -349,6 +366,14 @@
         {
           "command": "mssql.runQueryHistory",
           "when": "view == queryHistory && viewItem == queryHistoryNode"
+        },
+        {
+          "command": "mssql.copySqlBinding",
+          "when": "editorLangId == sql"
+        },
+        {
+          "command": "mssql.insertSqlInputBinding",
+          "when": "editorLangId == csharp"
         }
       ]
     },
@@ -511,6 +536,16 @@
       {
         "command": "mssql.removeAadAccount",
         "title": "%mssql.removeAadAccount%",
+        "category": "MS SQL"
+      },
+      {
+        "command": "mssql.copySqlBinding",
+        "title": "%mssql.copySqlBinding%",
+        "category": "MS SQL"
+      },
+      {
+        "command": "mssql.insertSqlInputBinding",
+        "title": "%mssql.insertSqlInputBinding%",
         "category": "MS SQL"
       }
     ],

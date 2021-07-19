@@ -31,6 +31,8 @@ import { ObjectExplorerUtils } from '../objectExplorer/objectExplorerUtils';
 import { ScriptOperation } from '../models/contracts/scripting/scriptingRequest';
 import { QueryHistoryProvider } from '../queryHistory/queryHistoryProvider';
 import { QueryHistoryNode } from '../queryHistory/queryHistoryNode';
+import { DacFxService } from '../dacfx/dacfxService';
+import { AzureFunctionsService } from '../azureFunctions/azureFunctionsService';
 
 /**
  * The main controller class that initializes the extension
@@ -53,7 +55,8 @@ export default class MainController implements vscode.Disposable {
     private _queryHistoryProvider: QueryHistoryProvider;
     private _scriptingService: ScriptingService;
     private _queryHistoryRegistered: boolean = false;
-
+    private _dacfxService: DacFxService;
+    private _azureFunctionsService: AzureFunctionsService;
     /**
      * The main controller constructor
      * @constructor
@@ -143,6 +146,23 @@ export default class MainController implements vscode.Disposable {
             this.initializeObjectExplorer();
 
             this.initializeQueryHistory();
+
+            this._dacfxService = new DacFxService(this._connectionMgr);
+
+            this._context.subscriptions.push(
+                vscode.commands.registerCommand(
+                    'mssql.copySqlBinding', async (uri: vscode.Uri) => {
+                        console.error('in copy sql binding');
+                        this._dacfxService.parseTSql(uri);
+            }));
+
+            this._azureFunctionsService = new AzureFunctionsService(this._connectionMgr);
+
+            this._context.subscriptions.push(
+                vscode.commands.registerCommand(
+                    'mssql.insertSqlInputBinding', async (uri: vscode.Uri) => {
+                        this._azureFunctionsService.insertSqlInputBinding(uri);
+            }));
 
             // Add handlers for VS Code generated commands
             this._vscodeWrapper.onDidCloseTextDocument(async (params) => await this.onDidCloseTextDocument(params));
